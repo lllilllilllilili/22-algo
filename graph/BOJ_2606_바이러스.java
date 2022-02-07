@@ -22,9 +22,9 @@ class Main {
             link.get(start).add(end);
             link.get(end).add(start);
         }
-        // bfs(); // 메모리 초과
         checked[1] = true;
-        dfs(1);
+        bfs();
+        // dfs(1);
         System.out.println(result);
     }
 
@@ -34,8 +34,11 @@ class Main {
         while (!queue.isEmpty()) {
             int node = queue.poll();
             for (int newNode : link.get(node)) {
-                queue.offer(newNode);
-                result++;
+                if(!checked[newNode]){
+                    queue.offer(newNode);
+                    checked[newNode] = true;
+                    result++;   
+                }
             }
         }
     }
