@@ -1,5 +1,5 @@
 const costs = [[0,1,1],[0,2,2],[1,2,5],[1,3,1],[2,3,8]];
-
+const n = 4;
 const solution = (n, costs) => {
 
     //# MST 구현하기
@@ -66,6 +66,3 @@ const solution = (n, costs) => {
 
     return totalBridgeCost;
 }
-
-const result = solution(4, costs)
-console.log(result);
