@@ -4,7 +4,7 @@ const n = 4;
 const solution = (n, costs) => {
 
     if(n === 1) return 0;
-    if(n === 2) return costs[0][1];
+    if(n === 2) return costs[0][2];
 
     //간선들의 가중치 합
     let totalBridgeCost = 0;
