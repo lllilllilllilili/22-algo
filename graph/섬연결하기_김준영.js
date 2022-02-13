@@ -1,10 +1,10 @@
-const costs = [[0,1,1],[0,2,2],[1,2,5],[1,3,1],[2,3,8]];
+const costs = [[0, 1, 5], [1, 2, 3], [2, 3, 3], [3, 1, 2], [3, 0, 4]];
 const n = 4;
 
 const solution = (n, costs) => {
 
     if(!costs.length) return 0;
-    if(costs.length <= 1) return costs[0][2];
+    if(costs.length < n) return costs.reduce((prev, current) => prev + current[2], 0);
 
     //간선들의 가중치 합
     let minBridgeCost = 0;
@@ -18,7 +18,7 @@ const solution = (n, costs) => {
 
     //1) 간선들의 가중치 오름차순으로 정렬
     const costsByIncrease = costs.sort((a,b) => a[2] - b[2]);
-
+    console.log(costsByIncrease)
     //2) 사이클을 형성하는 간선을 제외하기 한다.
     //사이클 여부 알아보는 법 Union-find 알고리즘
     //2-1. 자기 자신이 root인 node(섬)를 만든다.
@@ -59,4 +59,5 @@ const solution = (n, costs) => {
     return minBridgeCost;
 }
 
-solution(4, costs);
+const result = solution(4, costs);
+console.log(result)
