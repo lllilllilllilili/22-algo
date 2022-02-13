@@ -3,7 +3,7 @@ import java.util.*;
 
 class Main {
     static int[][] map;
-    static int[][] dp;
+    static int[][][] dp;
     static int size;
 
     public static void main(String[] args) throws IOException {
@@ -13,81 +13,58 @@ class Main {
         size = Integer.parseInt(br.readLine());
 
         map = new int[size][size];
-        dp = new int[size][size];
+        dp = new int[size][size][3];
 
         for (int i = 0; i < size; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
             for (int j = 0; j < size; j++) {
                 map[i][j] = Integer.parseInt(st.nextToken());
-                if (map[i][j] == 0)
-                    dp[i][j] = 1;
             }
         }
 
-        int max = Integer.MIN_VALUE;
+        if (map[0][0] == 0) {
+            dp[0][0][0] = 1;
+        }
 
         // 0행 초기화
-        int prev1 = 0;
-        for (int i = 0; i < size; i++) {
-            if (prev1 == getNumber(map[0][i])) {
-                if (i - 1 >= 0) {
-                    dp[0][i] = dp[0][i - 1] + 1;
-                    prev1 = map[0][i];
-                    max = Math.max(max, dp[0][i]);
-                }
-            }
+        for (int i = 1; i < size; i++) {
+            int milk = map[0][i];
+            // dp[0][i][0]에는 현재가 딸기우유가 맞으면 전 열의 바나나우유 + 1 , 딸기우유가 아니면 전 열의 딸기우유 그대로
+            dp[0][i][0] = milk == 0 ? dp[0][i - 1][2] + 1 : dp[0][i - 1][0];
+
+            // dp[0][i][1]에는 현재가 초코우유가 맞고 , 전 열의 딸기우유가 바나나우유보다 크다면 초코우유를 마시는 순서가 맞으므로 전 열의
+            // 딸기우유 + 1
+            dp[0][i][1] = milk == 1 && dp[0][i - 1][0] > dp[0][i - 1][2] ? dp[0][i][0] + 1 : dp[0][i - 1][1];
+
+            // dp[0][i][2]에는 현재가 바나나우유가 맞고 , 전 열의 초코우유가 딸기우유보다 크다면 바나나우유를 마시는 순서가 맞으므로 전 열의
+            // 초코우유 + 1
+            dp[0][i][2] = milk == 2 && dp[0][i - 1][1] > dp[0][i - 1][0] ? dp[0][i - 1][1] + 1 : dp[0][i - 1][2];
         }
 
         // 0열 초기화
-        int prev2 = 0;
-        for (int i = 0; i < size; i++) {
-            if (prev2 == getNumber(map[i][0])) {
-                if (i - 1 >= 0) {
-                    dp[i][0] = dp[i - 1][0] + 1;
-                    prev2 = map[i][0];
-                    max = Math.max(max, dp[i][0]);
-                }
-            }
+        for (int i = 1; i < size; i++) {
+            int milk = map[i][0];
+            dp[i][0][0] = milk == 0 ? dp[i - 1][0][2] + 1 : dp[i - 1][0][0];
+            dp[i][0][1] = milk == 1 && dp[i - 1][0][0] > dp[i - 1][0][2] ? dp[i - 1][0][0] + 1 : dp[i - 1][0][1];
+            dp[i][0][2] = milk == 2 && dp[i - 1][0][1] > dp[i - 1][0][0] ? dp[i - 1][0][1] + 1 : dp[i - 1][0][2];
         }
 
-        // 초기화 해놓은 0행과 0열을 참고하여 나아간다.
         for (int i = 1; i < size; i++) {
             for (int j = 1; j < size; j++) {
-                int rowPrev = map[i][j - 1];
-                int colPrev = map[i - 1][j];
-                int now = map[i][j];
-                int expect = getNumber(now);
-                if (rowPrev == expect && colPrev == expect)
-                    dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]) + 1;
-                else if (rowPrev == expect)
-                    dp[i][j] = dp[i][j - 1] + 1;
-                else if (colPrev == expect)
-                    dp[i][j] = dp[i - 1][j] + 1;
-                else if (rowPrev == now)
-                    dp[i][j] = dp[i][j - 1];
-                else if (colPrev == now)
-                    dp[i][j] = dp[i - 1][j];
-                max = Math.max(max, dp[i][j]);
+                int milk = map[i][j];
+                dp[i][j][0] = milk == 0 ? Math.max(dp[i][j - 1][2], dp[i - 1][j][2]) + 1
+                        : Math.max(dp[i][j - 1][0], dp[i - 1][j][0]);
+                dp[i][j][1] = milk == 1 && dp[i][j][0] > dp[i][j][2] ? Math.max(dp[i][j - 1][0], dp[i - 1][j][0]) + 1
+                        : Math.max(dp[i][j - 1][1], dp[i - 1][j][1]);
+                dp[i][j][2] = milk == 2 && dp[i][j][1] > dp[i][j][0] ? Math.max(dp[i][j - 1][1], dp[i - 1][j][1]) + 1
+                        : Math.max(dp[i][j - 1][2], dp[i - 1][j][2]);
             }
         }
 
-        // for(int i = 0 ; i < size ; i++){
-        // System.out.println();
-        // for(int j = 0 ; j < size ; j++) System.out.print(dp[i][j]);
-        // }
-
-        bw.append(String.valueOf(max));
+        bw.append(String.valueOf(
+                Math.max(dp[size - 1][size - 1][0], Math.max(dp[size - 1][size - 1][1], dp[size - 1][size - 1][2]))));
         bw.flush();
         bw.close();
         br.close();
     }
-
-    public static int getNumber(int now) {
-        if (now == 0)
-            return 2;
-        else if (now == 1)
-            return 0;
-        return 1;
-    }
-
 }
