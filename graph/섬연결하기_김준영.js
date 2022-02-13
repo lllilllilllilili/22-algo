@@ -1,5 +1,5 @@
-const costs = [[0, 1, 5], [1, 2, 3], [2, 3, 3], [3, 1, 2], [3, 0, 4]];
-const n = 4;
+const costs = [[0, 1, 5], [0, 3, 2], [0, 4, 3], [1, 4, 1], [3, 4, 10], [1, 2, 2], [2, 5, 3], [4, 5, 4]];
+const n = 6;
 
 const solution = (n, costs) => {
 
@@ -29,9 +29,16 @@ const solution = (n, costs) => {
 
     for(let eachInfo of costsByIncrease){
 
-        const node1 = eachInfo[0];
-        const node2 = eachInfo[1];
+        let node1 = eachInfo[0];
+        let node2 = eachInfo[1];
         const cost = eachInfo[2];
+
+        if(node2 < node1){
+            let temp = node1;
+            node1 = node2;
+            node2 = temp;
+        }
+
 
         //2) 간선들 연결(단, 사이클이 형성되는 간선 제외)
         union(node1, node2, cost);
@@ -45,7 +52,7 @@ const solution = (n, costs) => {
         //연결 시 사이클 형성되는 간선 제외 조건 추가
         //연결하려는 node(섬)의 rootNode가 다른 경우에만 다리를 건설한다.(같으면 서로 node간의 통행방법. 즉, 연결고리가 있다는 뜻)
         if(node1Root !== node2Root){
-            (parent[node2] = node1);
+            (parent[node2Root] = node1);
             minBridgeCost += cost;
         }
     }
