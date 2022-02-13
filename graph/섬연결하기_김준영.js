@@ -43,7 +43,7 @@ const solution = (n, costs) => {
         const node2Root = findRoot(node2);
 
         //연결 시 사이클 형성되는 간선 제외 조건 추가
-        //연결하려는 node(섬)의 rootNode가 다른 경우에만 다리를 건설한다.(같으면 이미 연결되어 있다는 의미)
+        //연결하려는 node(섬)의 rootNode가 다른 경우에만 다리를 건설한다.(같으면 서로 node간의 통행방법. 즉, 연결고리가 있다는 뜻)
         if(node1Root !== node2Root){
             (parent[node2] = node1);
             totalBridgeCost += cost;
@@ -58,3 +58,5 @@ const solution = (n, costs) => {
 
     return totalBridgeCost;
 }
+
+solution(4, costs);
