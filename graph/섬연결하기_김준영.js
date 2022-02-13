@@ -3,11 +3,11 @@ const n = 4;
 
 const solution = (n, costs) => {
 
-    if(n === 1) return 0;
-    if(n === 2) return costs[0][2];
+    if(!costs.length) return 0;
+    if(costs.length <= 1) return costs[0][2];
 
     //간선들의 가중치 합
-    let totalBridgeCost = 0;
+    let minBridgeCost = 0;
 
     //# MST 구현하기
 
@@ -46,7 +46,7 @@ const solution = (n, costs) => {
         //연결하려는 node(섬)의 rootNode가 다른 경우에만 다리를 건설한다.(같으면 서로 node간의 통행방법. 즉, 연결고리가 있다는 뜻)
         if(node1Root !== node2Root){
             (parent[node2] = node1);
-            totalBridgeCost += cost;
+            minBridgeCost += cost;
         }
     }
 
@@ -56,7 +56,7 @@ const solution = (n, costs) => {
         return parent[x] === x ? x : findRoot(parent[x]);
     }
 
-    return totalBridgeCost;
+    return minBridgeCost;
 }
 
 solution(4, costs);
